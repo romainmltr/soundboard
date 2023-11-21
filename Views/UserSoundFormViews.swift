@@ -8,18 +8,18 @@
 import Foundation
 import SwiftUI
 
-struct UserSoundsFormView: View {
+struct UserSoundFormView: View {
     @State private var selectedSoundIndex = 0
     @State private var soundName = ""
-    @Binding var userSounds: [UserSoud]
+    @State private var userSounds: [UserSoud] = UserSoud.userSounds()
 
     var body: some View {
         NavigationView {
             Form {
                 Section("Select Sound") {
                     Picker("Select Sound", selection: $selectedSoundIndex) {
-                        ForEach(0..<userSounds.count) { index in
-                            Text(userSounds[index].fileName)
+                        ForEach(0..<SoundOnly.soundOnly().count) { index in
+                            Text(SoundOnly.soundOnly()[index].fileName)
                         }
                     }
                 }
@@ -39,14 +39,13 @@ struct UserSoundsFormView: View {
     }
 
     func addUserSound() {
-        guard selectedSoundIndex < userSounds.count else {
+        guard selectedSoundIndex < SoundOnly.soundOnly().count else {
             return
         }
 
-        let selectedSound = userSounds[selectedSoundIndex]
-        let userSound = UserSoud(fileName: selectedSound.fileName)
+        let selectedSound = SoundOnly.soundOnly()[selectedSoundIndex]
+        let userSound = UserSoud(fileName: selectedSound.fileName, soundName: soundName)
 
-        // Add the new user sound to the userSounds array
         userSounds.append(userSound)
 
         // Clear the form fields
@@ -54,8 +53,9 @@ struct UserSoundsFormView: View {
     }
 }
 
-struct UserSoundsFormView_Previews: PreviewProvider {
+struct UserSoundFormView_Previews: PreviewProvider {
     static var previews: some View {
-        UserSoundsFormView(userSounds: .constant([]))
+        UserSoundFormView()
     }
 }
+
