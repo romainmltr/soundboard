@@ -4,44 +4,49 @@ import AVFoundation
 struct ContentView: View {
     @State private var sounds: [Sound] = Sound.allSounds()
     @State private var audioPlayer: AVAudioPlayer?
+    @State private var showAlert = false
+    @State private var soundToDelete: Sound?
+    @State private var userSounds: [UserSoud] = [] // Add this line
 
     var body: some View {
         NavigationView {
-            List(sounds) { sound in
-                Button(action: {
-                    playSound(sound: sound)
-                }) {
-                    HStack(spacing: 20) {
-                        if let imageURL = sound.imageURL {
-                            AsyncImage(url: imageURL) { phase in
-                                switch phase {
-                                case .empty:
-                                    ProgressView()
-                                case .success(let image):
-                                    image
-                                        .resizable()
-                                        .aspectRatio(contentMode: .fit)
-                                        .frame(width: 200, height: 150)
-                                case .failure:
-                                    Image(systemName: "photo")
-                                }
-                            }
-                        } else {
-                            Image(systemName: "photo")
-                        }
-                        Text(sound.name)
-                    }
+            ScrollView {
+                ForEach(sounds) { sound in
+                    CardView(sound: sound, playAction: {
+                        playSound(sound: sound)
+                    }, deleteAction: {
+                        soundToDelete = sound
+                        showAlert = true
+                    })
+                    .padding(.bottom, 10)
                 }
             }
-            .navigationBarTitle("Soundboard")
+            .alert(isPresented: $showAlert) {
+                Alert(
+                    title: Text("Delete Sound"),
+                    message: Text("Are you sure you want to delete this sound?"),
+                    primaryButton: .destructive(Text("Delete")) {
+                        if let sound = soundToDelete {
+                            deleteSound(sound: sound)
+                        }
+                    },
+                    secondaryButton: .cancel()
+                )
+            }
             .navigationBarItems(
                 leading: NavigationLink(destination: FormViews(sounds: $sounds)) {
                     Text("Ajouter")
                     Image(systemName: "music.note")
+                },
+                trailing: NavigationLink(destination: UserSoundsFormView(userSounds: $userSounds)) {
+                    Text("ajouter des sons")
+                    Image(systemName: "person")
                 }
             )
         }
     }
+    
+
 
     func playSound(sound: Sound) {
         if let soundURL = Bundle.main.url(forResource: sound.fileName, withExtension: nil) {
@@ -53,10 +58,75 @@ struct ContentView: View {
             }
         }
     }
+
+    func deleteSound(sound: Sound) {
+        if let index = sounds.firstIndex(where: { $0.id == sound.id }) {
+            sounds.remove(at: index)
+        }
+    }
 }
+
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         ContentView()
+    }
+}
+
+struct CardView: View {
+    let sound: Sound
+    let playAction: () -> Void
+    let deleteAction: () -> Void
+    
+    var body: some View {
+        VStack {
+            
+            if let imageURL = sound.imageURL {
+                AsyncImage(url: imageURL) { phase in
+                    switch phase {
+                    case .empty:
+                        ProgressView()
+                    case .success(let image):
+                        image
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(height: 100)
+                    case .failure:
+                        Image(systemName: "photo")
+                    }
+                }
+            } else {
+                Image(systemName: "photo")
+            }
+            
+            Text(sound.name)
+                .padding()
+            
+            HStack {
+                Button(action: playAction) {
+                    Image(systemName: "play.circle.fill")
+                        .font(.title)
+                        .foregroundColor(.blue)
+                }
+                Spacer()
+                Button(action: deleteAction) {
+                    Image(systemName: "trash.fill")
+                        .font(.title)
+                        .foregroundColor(.red)
+                }
+            }
+            .padding()
+        }
+        .background(Color.white)
+        .cornerRadius(5)
+        .shadow(radius: 1)
+        .padding()
+    }
+    
+    
+    struct ContentView_Previews: PreviewProvider {
+        static var previews: some View {
+            ContentView()
+        }
     }
 }
