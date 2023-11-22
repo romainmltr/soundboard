@@ -89,7 +89,7 @@ struct ContentView: View {
         let deleteAction: () -> Void
 
         var body: some View {
-            VStack {
+            VStack(spacing: 10) {
                 if let imageURL = sound.imageURL {
                     AsyncImage(url: imageURL) { phase in
                         switch phase {
@@ -98,8 +98,9 @@ struct ContentView: View {
                         case .success(let image):
                             image
                                 .resizable()
-                                .aspectRatio(contentMode: .fit)
-                                .frame(height: 100)
+                                .aspectRatio(contentMode: .fill)
+                                .frame(maxWidth: .infinity, maxHeight: 150)
+                                .clipped()
                         case .failure:
                             Image(systemName: "photo")
                         }
@@ -108,28 +109,37 @@ struct ContentView: View {
                     Image(systemName: "photo")
                 }
 
-                Text(sound.name)
-                    .padding()
+                VStack(alignment: .leading, spacing: 5) {
+                    Text(sound.name)
+                        .font(.title2)
+                        .fontWeight(.semibold)
+                        .foregroundColor(.primary)
+
+                }
+                .padding()
 
                 HStack {
                     Button(action: playAction) {
                         Image(systemName: "play.circle.fill")
                             .font(.title)
-                            .foregroundColor(.blue)
+                            .foregroundColor(.black)
                     }
                     Spacer()
                     Button(action: deleteAction) {
                         Image(systemName: "trash.fill")
                             .font(.title)
-                            .foregroundColor(.red)
+                            .foregroundColor(.black)
                     }
                 }
-                .padding()
+                .padding(.vertical)
+                .padding(.horizontal)
+
             }
             .background(Color.white)
-            .cornerRadius(5)
-            .shadow(radius: 1)
+            .cornerRadius(10)
+            .shadow(radius: 2)
             .padding()
         }
     }
+
 }
