@@ -11,15 +11,19 @@ import SwiftUI
 struct UserSoundFormView: View {
     @State private var selectedSoundIndex = 0
     @State private var soundName = ""
-    @State private var userSounds: [UserSoud] = UserSoud.userSounds()
+    @Binding var userSounds: [UserSoud]
+
+    var soundOnlyList: [SoundOnly] {
+        userSounds.map { $0.soundOnlyObject! }
+    }
 
     var body: some View {
         NavigationView {
             Form {
                 Section("Select Sound") {
                     Picker("Select Sound", selection: $selectedSoundIndex) {
-                        ForEach(0..<SoundOnly.soundOnly().count) { index in
-                            Text(SoundOnly.soundOnly()[index].fileName)
+                        ForEach(0..<soundOnlyList.count, id: \.self) { index in
+                            Text(self.soundOnlyList[index].fileName)
                         }
                     }
                 }
@@ -39,23 +43,17 @@ struct UserSoundFormView: View {
     }
 
     func addUserSound() {
-        guard selectedSoundIndex < SoundOnly.soundOnly().count else {
+        guard selectedSoundIndex < soundOnlyList.count else {
             return
         }
 
-        let selectedSound = SoundOnly.soundOnly()[selectedSoundIndex]
+        let selectedSound = soundOnlyList[selectedSoundIndex]
         let userSound = UserSoud(fileName: selectedSound.fileName, soundName: soundName)
 
+        // Ajoutez le nouveau son utilisateur à la liste des sons d'utilisateur
         userSounds.append(userSound)
 
-        // Clear the form fields
+        // Effacez les champs du formulaire
         soundName = ""
     }
 }
-
-struct UserSoundFormView_Previews: PreviewProvider {
-    static var previews: some View {
-        UserSoundFormView()
-    }
-}
-

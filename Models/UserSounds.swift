@@ -5,7 +5,7 @@
 //  Created by Malaterre Romain on 21/11/2023.
 //
 import Foundation
-
+import SwiftUI
 
 class UserSoud: Identifiable {
     var id = UUID()
@@ -22,13 +22,16 @@ class UserSoud: Identifiable {
 
     static func userSounds() -> [UserSoud] {
         return [
-            UserSoud(fileName: "BenVoyons.mp3", soundName: "Test1"),
-            UserSoud(fileName: "tk78", soundName: "Test2"),
-            UserSoud(fileName: "Hein.mp3", soundName: "Test3")
+            UserSoud(fileName: "BenVoyons.mp3", soundName: ""),
+            UserSoud(fileName: "tk78", soundName: ""),
+            UserSoud(fileName: "Hein.mp3", soundName: "")
         ]
     }
 
     private static func getSoundOnlyObject(for fileName: String) -> SoundOnly? {
-        return SoundOnly.soundOnly().first { $0.fileName == fileName }
+        if let soundOnly = SoundOnly.soundOnly().first(where: { $0.fileName == fileName }) {
+            return SoundOnly(fileName: soundOnly.fileName)
+        }
+        return nil
     }
 }

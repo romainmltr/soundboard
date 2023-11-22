@@ -1,9 +1,5 @@
-    import SwiftUI
-    import AVFoundation
-
 import SwiftUI
 import AVFoundation
-
 struct ContentView: View {
     @State private var sounds: [Sound] = Sound.allSounds()
     @State private var audioPlayer: AVAudioPlayer?
@@ -57,6 +53,15 @@ struct ContentView: View {
                 Image(systemName: "heart.fill")
                 Text("Favorites")
             }
+            
+            NavigationView {
+                       JokeView()
+                   }
+                   .tabItem {
+                       Image(systemName: "smiley.fill")
+                       Text("Blague")
+                   }
+                   .tag(2)
         }
     }
 
@@ -76,23 +81,55 @@ struct ContentView: View {
             sounds.remove(at: index)
         }
     }
-}
 
 
+    struct CardView: View {
+        let sound: Sound
+        let playAction: () -> Void
+        let deleteAction: () -> Void
 
-    struct ContentView_Previews: PreviewProvider {
-        static var previews: some View {
-            ContentView()
-        }
-    }
+        var body: some View {
+            VStack {
+                if let imageURL = sound.imageURL {
+                    AsyncImage(url: imageURL) { phase in
+                        switch phase {
+                        case .empty:
+                            ProgressView()
+                        case .success(let image):
+                            image
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .frame(height: 100)
+                        case .failure:
+                            Image(systemName: "photo")
+                        }
+                    }
+                } else {
+                    Image(systemName: "photo")
+                }
 
+                Text(sound.name)
+                    .padding()
 
-    
-        
-        
-        struct ContentView_Previews: PreviewProvider {
-            static var previews: some View {
-                ContentView()
+                HStack {
+                    Button(action: playAction) {
+                        Image(systemName: "play.circle.fill")
+                            .font(.title)
+                            .foregroundColor(.blue)
+                    }
+                    Spacer()
+                    Button(action: deleteAction) {
+                        Image(systemName: "trash.fill")
+                            .font(.title)
+                            .foregroundColor(.red)
+                    }
+                }
+                .padding()
             }
+            .background(Color.white)
+            .cornerRadius(5)
+            .shadow(radius: 1)
+            .padding()
         }
     }
+}
