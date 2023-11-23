@@ -83,7 +83,6 @@ struct JokeView: View {
 struct Joke: Codable {
     let setup: String
     let delivery: String
-    // Ajoutez d'autres propriétés si nécessaire
 }
 
 struct JokeView_Previews: PreviewProvider {

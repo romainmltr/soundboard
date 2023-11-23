@@ -3,12 +3,11 @@
 //  SoudboardQuizz
 //
 //  Created by Malaterre Romain on 21/11/2023.
-//
 import Foundation
 import SwiftUI
 
 
-class UserSoud: Identifiable {
+class UserSoud: Identifiable, Codable {
     var id = UUID()
     var soundName: String?
     var fileName: String
@@ -24,7 +23,11 @@ class UserSoud: Identifiable {
         return [
             UserSoud(fileName: "BenVoyons.mp3", soundName: ""),
             UserSoud(fileName: "tk78.mp3", soundName: ""),
-            UserSoud(fileName: "Hein.mp3", soundName: "")
+            UserSoud(fileName: "Hein.mp3", soundName: ""),
+            UserSoud(fileName: "Projet.mp3", soundName: ""),
+            UserSoud(fileName: "greg.mp3", soundName: ""),
+            UserSoud(fileName: "oss117.mp3", soundName: "ossp3"),
+            UserSoud(fileName: "reuf.mp3", soundName: "reuf.mp3")
         ]
     }
 

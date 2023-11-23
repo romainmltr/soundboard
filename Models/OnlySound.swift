@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct SoundOnly: Identifiable {
+struct SoundOnly: Identifiable, Codable {
     let id: UUID
     let fileName: String
 
@@ -19,9 +19,12 @@ struct SoundOnly: Identifiable {
     static func soundOnly() -> [SoundOnly] {
         return [
             SoundOnly(fileName: "BenVoyons.mp3"),
-            SoundOnly(fileName: "tk78"),
-            SoundOnly(fileName: "Hein.mp3")
+            SoundOnly(fileName: "tk78.mp3"),
+            SoundOnly(fileName: "Hein.mp3"),
+            SoundOnly(fileName: "Projet.mp3"),
+            SoundOnly(fileName: "greg.mp3"),
+            SoundOnly(fileName: "oss117.mp3"),
+            SoundOnly(fileName: "reuf.mp3")
         ]
     }
 }
-

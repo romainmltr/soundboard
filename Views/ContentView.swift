@@ -12,16 +12,26 @@ struct ContentView: View {
         TabView {
             NavigationView {
                 ScrollView {
-                    ForEach(sounds) { sound in
-                        CardView(sound: sound, playAction: {
-                            playSound(sound: sound)
-                        }, deleteAction: {
-                            soundToDelete = sound
-                            showAlert = true
-                        })
-                        .padding(.bottom, 10)
+                    LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 10) {
+                        ForEach(sounds) { sound in
+                            CardView(sound: sound, playAction: {
+                                playSound(sound: sound)
+                            }, deleteAction: {
+                                soundToDelete = sound
+                                showAlert = true
+                            })
+                            .frame(height: 240)
+                        }
                     }
-                    .backgroundColorRadiant()
+                    .padding()
+                    .background(Color.white.opacity(0.0))
+                    .navigationBarTitle("Sounds")
+                    .navigationBarItems(trailing: VStack {
+                        NavigationLink(destination: FavoriteViews(userSounds: $userSounds)) {
+                            Image(systemName: "star.fill")
+                                .foregroundColor(.black)
+                        }
+                    })
                 }
                 .alert(isPresented: $showAlert) {
                     Alert(
@@ -35,17 +45,6 @@ struct ContentView: View {
                         secondaryButton: .cancel()
                     )
                 }
-                
-                .navigationBarItems(trailing: VStack {
-                    NavigationLink(destination: FavoriteViews(userSounds: $userSounds)) {
-                        Image(systemName: "star.fill")
-                            .foregroundColor(.black)
-                            
-                    
-                        
-                    }
-                })
-                
             }
             .tabItem {
                 Image(systemName: "play.circle.fill")
@@ -59,11 +58,8 @@ struct ContentView: View {
                 Image(systemName: "smiley.fill")
                 Text("Blague")
             }
-            .tag(2)
         }
-
     }
-
 
     func playSound(sound: Sound) {
         if let soundURL = Bundle.main.url(forResource: sound.fileName, withExtension: nil) {
@@ -82,14 +78,15 @@ struct ContentView: View {
         }
     }
 
-
     struct CardView: View {
         let sound: Sound
         let playAction: () -> Void
         let deleteAction: () -> Void
 
+        @State private var isAnimating: Bool = false
+
         var body: some View {
-            VStack(spacing: 5) {
+            VStack {
                 if let imageURL = sound.imageURL {
                     AsyncImage(url: imageURL) { phase in
                         switch phase {
@@ -98,9 +95,9 @@ struct ContentView: View {
                         case .success(let image):
                             image
                                 .resizable()
-                                .aspectRatio(contentMode: .fill)
-                                .frame(maxWidth: .infinity, maxHeight: 100)
-                                .clipped()
+                                .scaledToFit()
+                                .shadow(color: Color(red: 0, green: 0, blue: 0, opacity: 0.15), radius: 8, x: 6, y: 8)
+                                .scaleEffect(isAnimating ? 1.0 : 0.6)
                         case .failure:
                             Image(systemName: "photo")
                         }
@@ -109,35 +106,37 @@ struct ContentView: View {
                     Image(systemName: "photo")
                 }
 
-                VStack(alignment: .leading, spacing: 1) {
-                    Text(sound.name)
-                        .font(.title2)
-                        .fontWeight(.semibold)
-                        .foregroundColor(.primary)
-
-                }
+                Text(sound.name)
+                    .foregroundColor(Color.white)
+                    .fontWeight(.heavy)
+                    .shadow(color: Color(red: 0, green: 0, blue: 0, opacity: 0.15), radius: 2, x: 2, y: 2)
 
                 HStack {
                     Button(action: playAction) {
                         Image(systemName: "play.circle.fill")
-                            .font(.title)
-                            .foregroundColor(.black)
+                            .font(.title3)
+                            .foregroundColor(.white)
                     }
-                    Spacer()
+                    .padding()
+
                     Button(action: deleteAction) {
                         Image(systemName: "trash.fill")
-                            .font(.title)
-                            .foregroundColor(.black)
+                            .font(.title3)
+                            .foregroundColor(.white)
                     }
+                    .padding()
                 }
-                .padding(.vertical)
-                .padding(.horizontal)
-
             }
-            .background(Color.white)
-            .cornerRadius(10)
-            .shadow(radius: 2)
             .padding()
+            .onAppear {
+                withAnimation(.easeOut(duration: 0.5)) {
+                    isAnimating = true
+                }
+            }
+            .frame(width: 160, height: 240)
+            .background(LinearGradient(gradient: Gradient(colors: [Color.blue, Color.purple]), startPoint: .top, endPoint: .bottom))
+            .cornerRadius(20)
+            .shadow(radius: 10)
         }
     }
 }

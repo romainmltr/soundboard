@@ -1,9 +1,3 @@
-//
-//  FavoriteViews.swift
-//  SoudboardQuizz
-//
-//  Created by Malaterre Romain on 21/11/2023.
-//
 import Foundation
 import SwiftUI
 import AVFoundation
@@ -40,10 +34,9 @@ struct FavoriteViews: View {
                         }
                     }
                 }
-                .navigationBarTitle("Add User Sound")
 
                 List {
-                    ForEach(userSounds) { userSound in
+                    ForEach(userSounds, id: \.id) { userSound in
                         UserSoundCardView(userSound: userSound, playAction: {
                             playUserSound(userSound: userSound)
                         }, deleteAction: {
@@ -51,10 +44,12 @@ struct FavoriteViews: View {
                         })
                     }
                 }
-                .navigationBarTitle("User Sounds")
                 .background(Color.clear)
             }
-            .backgroundColorRadiant()
+        }
+        .onAppear {
+            // Charger les données sauvegardées lors de l'apparition de la vue
+            loadUserSounds()
         }
     }
 
@@ -67,6 +62,9 @@ struct FavoriteViews: View {
         let userSound = UserSoud(fileName: selectedSound.fileName, soundName: soundName)
         userSounds.append(userSound)
         soundName = ""
+
+        // Sauvegarder les données après l'ajout
+        saveUserSounds()
     }
 
     func playUserSound(userSound: UserSoud) {
@@ -83,6 +81,29 @@ struct FavoriteViews: View {
     func deleteUserSound(userSound: UserSoud) {
         if let index = userSounds.firstIndex(where: { $0.id == userSound.id }) {
             userSounds.remove(at: index)
+            // Sauvegarder les données après la suppression
+            saveUserSounds()
+        }
+    }
+
+    // Charger les données sauvegardées depuis UserDefaults
+    func loadUserSounds() {
+        if let data = UserDefaults.standard.data(forKey: "userSounds") {
+            do {
+                userSounds = try JSONDecoder().decode([UserSoud].self, from: data)
+            } catch {
+                print("Error loading user sounds: \(error.localizedDescription)")
+            }
+        }
+    }
+
+    // Sauvegarder les données dans UserDefaults
+    func saveUserSounds() {
+        do {
+            let data = try JSONEncoder().encode(userSounds)
+            UserDefaults.standard.set(data, forKey: "userSounds")
+        } catch {
+            print("Error saving user sounds: \(error.localizedDescription)")
         }
     }
 }
@@ -93,10 +114,13 @@ struct UserSoundCardView: View {
     let deleteAction: () -> Void
 
     var body: some View {
-        
         VStack {
-            
+            if let soundName = userSound.soundName {
+                Text(soundName)
+                    .font(.title)
+            }
             Text(userSound.fileName)
+                .font(.subheadline)
             HStack {
                 Button(action: playAction) {
                     Image(systemName: "play.circle.fill")
@@ -104,26 +128,21 @@ struct UserSoundCardView: View {
                         .foregroundColor(.blue)
                 }
 
-                Button(action: deleteAction) {
-                    Image(systemName: "trash.circle.fill")
-                        .font(.title)
-                        .foregroundColor(.red)
-                }
-           
-                
+               // Button(action: deleteAction) {
+                 //   Image(systemName: "trash.circle.fill")
+                   //     .font(.title)
+                     //   .foregroundColor(.red)
+                //}
             }
         }
-    
     }
 }
-
 
 struct FavoriteViews_Previews: PreviewProvider {
     static var previews: some View {
         let sampleUserSounds: [UserSoud] = [
             UserSoud(fileName: "SampleSound1.mp3", soundName: "Sample1"),
             UserSoud(fileName: "SampleSound2.mp3", soundName: "Sample2")
-        
         ]
 
         return FavoriteViews(userSounds: .constant(sampleUserSounds))
