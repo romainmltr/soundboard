@@ -12,7 +12,7 @@ struct JokeView: View {
     @State private var joke: Joke?
     @State private var selectedCategory: String = "Programming"
     @State private var selectedLanguage: String = "en"
-    @State private var categories = ["Programming", "Miscellaneous", "Pun","Spooky", "Christmas"]
+    @State private var categories = ["Programming", "Miscellaneous","Dark", "Pun","Spooky","Christmas"]
     @State private var languages = ["en", "fr", "de", "es", "it"]
 
     var body: some View {
@@ -91,4 +91,3 @@ struct JokeView_Previews: PreviewProvider {
         JokeView()
     }
 }
-

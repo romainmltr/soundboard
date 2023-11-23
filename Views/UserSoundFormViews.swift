@@ -13,6 +13,7 @@ struct UserSoundFormView: View {
     @State private var soundName = ""
     @Binding var userSounds: [UserSoud]
 
+
     var soundOnlyList: [SoundOnly] {
         userSounds.map { $0.soundOnlyObject! }
     }
@@ -49,11 +50,7 @@ struct UserSoundFormView: View {
 
         let selectedSound = soundOnlyList[selectedSoundIndex]
         let userSound = UserSoud(fileName: selectedSound.fileName, soundName: soundName)
-
-        // Ajoutez le nouveau son utilisateur à la liste des sons d'utilisateur
         userSounds.append(userSound)
-
-        // Effacez les champs du formulaire
         soundName = ""
     }
 }

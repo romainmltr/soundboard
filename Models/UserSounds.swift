@@ -7,6 +7,7 @@
 import Foundation
 import SwiftUI
 
+
 class UserSoud: Identifiable {
     var id = UUID()
     var soundName: String?
@@ -16,14 +17,13 @@ class UserSoud: Identifiable {
     init(fileName: String, soundName: String? = nil) {
         self.fileName = fileName
         self.soundName = soundName
-
         self.soundOnlyObject = UserSoud.getSoundOnlyObject(for: fileName)
     }
 
     static func userSounds() -> [UserSoud] {
         return [
             UserSoud(fileName: "BenVoyons.mp3", soundName: ""),
-            UserSoud(fileName: "tk78", soundName: ""),
+            UserSoud(fileName: "tk78.mp3", soundName: ""),
             UserSoud(fileName: "Hein.mp3", soundName: "")
         ]
     }

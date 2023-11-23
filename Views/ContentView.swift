@@ -1,5 +1,6 @@
 import SwiftUI
 import AVFoundation
+
 struct ContentView: View {
     @State private var sounds: [Sound] = Sound.allSounds()
     @State private var audioPlayer: AVAudioPlayer?
@@ -20,6 +21,7 @@ struct ContentView: View {
                         })
                         .padding(.bottom, 10)
                     }
+                    .backgroundColorRadiant()
                 }
                 .alert(isPresented: $showAlert) {
                     Alert(
@@ -33,37 +35,35 @@ struct ContentView: View {
                         secondaryButton: .cancel()
                     )
                 }
+                
                 .navigationBarItems(trailing: VStack {
-                    NavigationLink(destination: UserSoundFormView(userSounds: $userSounds)) {
-                        Text("ajouter des sons")
-                        Image(systemName: "person")
+                    NavigationLink(destination: FavoriteViews(userSounds: $userSounds)) {
+                        Image(systemName: "star.fill")
+                            .foregroundColor(.black)
+                            
+                    
+                        
                     }
                 })
+                
             }
             .tabItem {
                 Image(systemName: "play.circle.fill")
                 Text("Sounds")
             }
 
-            // Favorites Screen
             NavigationView {
-                FavoriteViews(userSounds: userSounds)
+                JokeView()
             }
             .tabItem {
-                Image(systemName: "heart.fill")
-                Text("Favorites")
+                Image(systemName: "smiley.fill")
+                Text("Blague")
             }
-            
-            NavigationView {
-                       JokeView()
-                   }
-                   .tabItem {
-                       Image(systemName: "smiley.fill")
-                       Text("Blague")
-                   }
-                   .tag(2)
+            .tag(2)
         }
+
     }
+
 
     func playSound(sound: Sound) {
         if let soundURL = Bundle.main.url(forResource: sound.fileName, withExtension: nil) {
@@ -89,7 +89,7 @@ struct ContentView: View {
         let deleteAction: () -> Void
 
         var body: some View {
-            VStack(spacing: 10) {
+            VStack(spacing: 5) {
                 if let imageURL = sound.imageURL {
                     AsyncImage(url: imageURL) { phase in
                         switch phase {
@@ -99,7 +99,7 @@ struct ContentView: View {
                             image
                                 .resizable()
                                 .aspectRatio(contentMode: .fill)
-                                .frame(maxWidth: .infinity, maxHeight: 150)
+                                .frame(maxWidth: .infinity, maxHeight: 100)
                                 .clipped()
                         case .failure:
                             Image(systemName: "photo")
@@ -109,14 +109,13 @@ struct ContentView: View {
                     Image(systemName: "photo")
                 }
 
-                VStack(alignment: .leading, spacing: 5) {
+                VStack(alignment: .leading, spacing: 1) {
                     Text(sound.name)
                         .font(.title2)
                         .fontWeight(.semibold)
                         .foregroundColor(.primary)
 
                 }
-                .padding()
 
                 HStack {
                     Button(action: playAction) {
@@ -141,5 +140,4 @@ struct ContentView: View {
             .padding()
         }
     }
-
 }
