@@ -26,8 +26,10 @@ class UserSoud: Identifiable, Codable {
             UserSoud(fileName: "Hein.mp3", soundName: ""),
             UserSoud(fileName: "Projet.mp3", soundName: ""),
             UserSoud(fileName: "greg.mp3", soundName: ""),
-            UserSoud(fileName: "oss117.mp3", soundName: "ossp3"),
-            UserSoud(fileName: "reuf.mp3", soundName: "reuf.mp3")
+            UserSoud(fileName: "oss117.mp3", soundName: ""),
+            UserSoud(fileName: "reuf.mp3", soundName: ""),
+            UserSoud(fileName: "Marc.mp3", soundName: ""),
+            UserSoud(fileName: "kamelot.mp3", soundName: "kamelot.mp3")
         ]
     }
 

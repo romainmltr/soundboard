@@ -19,12 +19,14 @@ struct SoundOnly: Identifiable, Codable {
     static func soundOnly() -> [SoundOnly] {
         return [
             SoundOnly(fileName: "BenVoyons.mp3"),
+            SoundOnly(fileName: "kamelot.mp3"),
             SoundOnly(fileName: "tk78.mp3"),
             SoundOnly(fileName: "Hein.mp3"),
             SoundOnly(fileName: "Projet.mp3"),
             SoundOnly(fileName: "greg.mp3"),
             SoundOnly(fileName: "oss117.mp3"),
-            SoundOnly(fileName: "reuf.mp3")
+            SoundOnly(fileName: "reuf.mp3"),
+            SoundOnly(fileName: "Marc.mp3")
         ]
     }
 }
